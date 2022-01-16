@@ -149,6 +149,7 @@ public final class Statement {
         }
     }()
     
+    #warning("TODO GRDB6: remove setter")
     /// The statement arguments.
     public var arguments: StatementArguments {
         get { _arguments }

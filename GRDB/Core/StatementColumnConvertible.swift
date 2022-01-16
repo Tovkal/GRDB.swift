@@ -9,13 +9,13 @@
 ///
 ///     let rows = Row.fetchCursor(db, sql: "SELECT ...")
 ///     while let row = try rows.next() {
-///         let int: Int = row[0]                 // there
+///         let int: Int = try row[0]                  // there
 ///     }
 ///     let ints = Int.fetchAll(db, sql: "SELECT ...") // there
 ///     struct Player {
-///         init(row: Row) {
-///             name = row["name"]                // there
-///             score = row["score"]              // there
+///         init(row: Row) throws {
+///             name = try row["name"]                 // there
+///             score = try row["score"]               // there
 ///         }
 ///     }
 public protocol StatementColumnConvertible {
@@ -168,9 +168,8 @@ where Value: DatabaseValueConvertible & StatementColumnConvertible
     
     /// :nodoc:
     @inlinable
-    public func _element(sqliteStatement: SQLiteStatement) -> Value {
-        // TODO GRDB6: don't crash on decoding errors
-        try! Value.fastDecode(
+    public func _element(sqliteStatement: SQLiteStatement) throws -> Value {
+        try Value.fastDecode(
             fromStatement: sqliteStatement,
             atUncheckedIndex: columnIndex,
             context: RowDecodingContext(statement: statement, index: Int(columnIndex)))
@@ -217,9 +216,8 @@ where Value: DatabaseValueConvertible & StatementColumnConvertible
     
     /// :nodoc:
     @inlinable
-    public func _element(sqliteStatement: SQLiteStatement) -> Value? {
-        // TODO GRDB6: don't crash on decoding errors
-        try! Value.fastDecodeIfPresent(
+    public func _element(sqliteStatement: SQLiteStatement) throws -> Value? {
+        try Value.fastDecodeIfPresent(
             fromStatement: sqliteStatement,
             atUncheckedIndex: columnIndex,
             context: RowDecodingContext(statement: statement, index: Int(columnIndex)))
